@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'me.zivex'
-version = '1.0.0'
+version = '1.0.1'
 
 repositories {
     mavenCentral()
@@ -12,6 +12,8 @@ repositories {
 
 dependencies {
     compileOnly 'io.papermc.paper:paper-api:26.2.build.129-stable'
+    compileOnly 'net.luckperms:api:5.5.85'
+    implementation 'org.xerial:sqlite-jdbc:3.50.3.0'
 }
 
 java {
@@ -24,4 +26,8 @@ processResources {
     filesMatching('plugin.yml') {
         expand(version: project.version)
     }
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
