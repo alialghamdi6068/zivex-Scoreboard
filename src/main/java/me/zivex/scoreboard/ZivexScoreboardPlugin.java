@@ -4,10 +4,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class ZivexScoreboardPlugin extends JavaPlugin {
+public final class ZivexScoreboardPlugin extends JavaPlugin implements CommandExecutor {
     private ScoreboardManagerService service;
 
     @Override
@@ -46,6 +47,32 @@ public final class ZivexScoreboardPlugin extends JavaPlugin {
 
     public void send(CommandSender sender, String message) {
         sender.sendMessage(color(message));
+    }
+
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!isAdmin(sender)) {
+            sender.sendMessage(message("no-permission"));
+            return true;
+        }
+        if (args.length == 0) {
+            sender.sendMessage(message("usage"));
+            return true;
+        }
+        switch (args[0].toLowerCase(java.util.Locale.ROOT)) {
+            case "reload" -> {
+                reloadScoreboard();
+                sender.sendMessage(message("reloaded"));
+            }
+            case "toggle" -> {
+                toggle();
+                boolean enabled = getConfig().getBoolean("settings.enabled", true);
+                sender.sendMessage(message(enabled ? "enabled" : "disabled"));
+            }
+            default -> sender.sendMessage(message("usage"));
+        }
+        return true;
     }
 
     public void reloadScoreboard() {
