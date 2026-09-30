@@ -146,7 +146,7 @@ public final class ScoreboardManagerService {
 
             for (Object registration : registrations) {
                 Object provider = registration.getClass().getMethod("getProvider").invoke(registration);
-                Object value = provider.getClass()
+                Object value = serviceClass
                         .getMethod("getBalance", UUID.class)
                         .invoke(provider, player.getUniqueId());
 
