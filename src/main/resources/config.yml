@@ -1,24 +1,18 @@
 # إعدادات ZivexScoreboard
-# كل النصوص التي تظهر للاعبين بالإنجليزية. التعليقات فقط للشرح.
+# النصوص التي تظهر للاعبين بالإنجليزية، والتعليقات فقط للشرح.
 
 settings:
   enabled: true
-
-  # اسم السيرفر ولون العنوان.
   server-name: "&5&lZivexMC"
   title: "&5&lZivexMC"
-
-  # عدد مرات تحديث السكوربورد بالـticks. 20 = ثانية واحدة.
   update-ticks: 20
 
-  # العوالم الموجودة هنا لن يظهر فيها السكوربورد.
-  disabled-worlds:
-    - "example_disabled_world"
+  # اكتب أسماء العوالم التي لا تريد ظهور السكوربورد فيها.
+  disabled-worlds: []
 
-  # الفوتر يظهر في أسفل السكوربورد.
   footer: "&7play.zivexmc.net"
 
-  # خطوط السكوربورد بالترتيب.
+  # الحد الأقصى لأسطر الـsidebar هو 15.
   lines:
     - "&8&m----------------"
     - "&fPlayer &7» &d%player%"
@@ -34,10 +28,13 @@ settings:
     - "&8&m----------------"
 
 placeholders:
-  # إذا لم تستخدم إضافة اقتصادية، يبقى %money% = 0.
+  # قيم احتياطية عند عدم توفر البيانات.
   money-default: "0"
   shards-default: "0"
-  rank-default: "Player"
+  rank-default: ""
+
+  # ملف قاعدة البيانات المشتركة بين أنظمة Zivex.
+  database-file: "../Zivex/database.db"
 
 messages:
   reloaded: "&aZivexScoreboard reloaded."
@@ -45,30 +42,3 @@ messages:
   disabled: "&cZivexScoreboard disabled."
   usage: "&cUsage: /zivexscoreboard <reload|toggle>"
   no-permission: "&cYou don't have permission."
-
-# ترتيب الرتب من الأعلى إلى الأقل.
-ranks:
-  owner:
-    permission: "zivex.rank.owner"
-    display: "&5Owner"
-  manager:
-    permission: "zivex.rank.manager"
-    display: "&6Manager"
-  developer:
-    permission: "zivex.rank.developer"
-    display: "&bDeveloper"
-  admin:
-    permission: "zivex.rank.admin"
-    display: "&cAdmin"
-  moderator:
-    permission: "zivex.rank.moderator"
-    display: "&9Moderator"
-  helper:
-    permission: "zivex.rank.helper"
-    display: "&aHelper"
-  mvp:
-    permission: "zivex.rank.mvp"
-    display: "&dMVP"
-  vip:
-    permission: "zivex.rank.vip"
-    display: "&eVIP"
