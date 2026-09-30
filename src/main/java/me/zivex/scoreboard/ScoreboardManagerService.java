@@ -2,7 +2,8 @@ package me.zivex.scoreboard;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -113,16 +114,17 @@ public final class ScoreboardManagerService {
     }
 
     private String rank(Player player) {
-        var ranks = plugin.getConfig().getConfigurationSection("ranks");
-        if (ranks == null) return plugin.getConfig().getString("placeholders.rank-default", "Player");
-
-        for (String key : ranks.getKeys(false)) {
-            String permission = ranks.getString(key + ".permission", "");
-            if (!permission.isBlank() && player.hasPermission(permission)) {
-                return ranks.getString(key + ".display", key);
+        try {
+            LuckPerms luckPerms = LuckPermsProvider.get();
+            String prefix = luckPerms.getPlayerAdapter(Player.class)
+                    .getMetaData(player)
+                    .getPrefix();
+            if (prefix != null && !prefix.isBlank()) {
+                return prefix;
             }
+        } catch (IllegalStateException ignored) {
         }
-        return plugin.getConfig().getString("placeholders.rank-default", "Player");
+        return plugin.getConfig().getString("placeholders.rank-default", "");
     }
 
     private String shards(Player player) {
@@ -158,6 +160,28 @@ public final class ScoreboardManagerService {
         }
 
         return plugin.getConfig().getString("placeholders.shards-default", "0");
+    }
+
+    private String money(Player player) {
+        File file = new File(plugin.getDataFolder(),
+                plugin.getConfig().getString("placeholders.database-file", "../Zivex/database.db"));
+        if (!file.isFile()) return plugin.getConfig().getString("placeholders.money-default", "0");
+
+        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + file.getAbsolutePath());
+             PreparedStatement statement = connection.prepareStatement(
+                     "SELECT balance FROM economy WHERE uuid = ?")) {
+            statement.setString(1, player.getUniqueId().toString());
+            try (ResultSet result = statement.executeQuery()) {
+                if (result.next()) {
+                    double value = Math.max(0D, result.getDouble(1));
+                    return value == Math.rint(value)
+                            ? String.format(java.util.Locale.ROOT, "%.0f", value)
+                            : String.format(java.util.Locale.ROOT, "%.2f", value);
+                }
+            }
+        } catch (SQLException ignored) {
+        }
+        return plugin.getConfig().getString("placeholders.money-default", "0");
     }
 
     private String uniqueEntry(int index) {
