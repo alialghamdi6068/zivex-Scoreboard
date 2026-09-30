@@ -108,7 +108,7 @@ public final class ScoreboardManagerService {
                 .replace("%world%", player.getWorld().getName())
                 .replace("%rank%", rank(player))
                 .replace("%shards%", shards(player))
-                .replace("%money%", plugin.getConfig().getString("placeholders.money-default", "0"));
+                .replace("%money%", money(player));
 
         return ZivexScoreboardPlugin.color(result);
     }
