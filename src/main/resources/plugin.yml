@@ -5,6 +5,7 @@ api-version: '26.2'
 author: Zivex
 description: Professional ZivexMC scoreboard.
 softdepend:
+  - LuckPerms
   - ZivexShards
 commands:
   zivexscoreboard:
