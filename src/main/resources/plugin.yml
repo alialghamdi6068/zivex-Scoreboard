@@ -1,0 +1,16 @@
+name: ZivexScoreboard
+version: ${version}
+main: me.zivex.scoreboard.ZivexScoreboardPlugin
+api-version: '26.2'
+author: Zivex
+description: Professional ZivexMC scoreboard.
+softdepend:
+  - ZivexShards
+commands:
+  zivexscoreboard:
+    description: Manage the Zivex scoreboard.
+    usage: /zivexscoreboard <reload|toggle>
+    permission: zivexscoreboard.admin
+permissions:
+  zivexscoreboard.admin:
+    default: op
