@@ -126,15 +126,37 @@ public final class ScoreboardManagerService {
     }
 
     private String shards(Player player) {
-        if (Bukkit.getPluginManager().isPluginEnabled("ZivexShards")) {
-            var registration = Bukkit.getServicesManager().getRegistration(
-                    me.voidflame.zivexshards.ShardService.class
-            );
-            if (registration != null) {
-                long balance = registration.getProvider().getBalance(player.getUniqueId());
-                if (balance >= 0) return String.valueOf(balance);
+        try {
+            var shardsPlugin = Bukkit.getPluginManager().getPlugin("ZivexShards");
+            if (shardsPlugin == null || !shardsPlugin.isEnabled()) {
+                return plugin.getConfig().getString("placeholders.shards-default", "0");
             }
+
+            Class<?> serviceClass = Class.forName(
+                    "me.voidflame.zivexshards.ShardService",
+                    true,
+                    shardsPlugin.getClass().getClassLoader()
+            );
+
+            var registrationsMethod = Bukkit.getServicesManager().getClass()
+                    .getMethod("getRegistrations", Class.class);
+            var registrations = (Iterable<?>) registrationsMethod.invoke(
+                    Bukkit.getServicesManager(), serviceClass
+            );
+
+            for (Object registration : registrations) {
+                Object provider = registration.getClass().getMethod("getProvider").invoke(registration);
+                Object value = provider.getClass()
+                        .getMethod("getBalance", UUID.class)
+                        .invoke(provider, player.getUniqueId());
+
+                if (value instanceof Number number && number.longValue() >= 0) {
+                    return String.valueOf(number.longValue());
+                }
+            }
+        } catch (Exception ignored) {
         }
+
         return plugin.getConfig().getString("placeholders.shards-default", "0");
     }
 
